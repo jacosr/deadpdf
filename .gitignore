@@ -1,0 +1,16 @@
+node_modules
+dist
+
+/.cache
+/build
+.env
+
+# Ignore Visual Studio settings
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Ignore VS Code settings
+.vscode/

@@ -1,0 +1,22 @@
+{
+  "name": "deadpdf",
+  "version": "0.1.0",
+  "description": "",
+  "main": "./dist/main.js",
+  "scripts": {
+    "copy": "cp src/renderer/*.html dist/renderer/",
+    "build": "tsc && npm run copy",
+    "start": "npm run build && electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Alan Jacobson",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/node": "^25.0.10",
+    "electron": "^40.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
