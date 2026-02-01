@@ -24,7 +24,7 @@ app.whenReady().then(() => {
                 return;
             }
         });
-        
+
         // default fallback
         callback({
             data: Buffer.from(`Not found: ${url}`), 
@@ -57,7 +57,7 @@ function createWindow() {
   });
 
   // Load the zip file into memory at startup
-  const zipFilePath = "C:\Users\twakj\source\repos\jacosr\azwa\azwa.dpdf";
+  const zipFilePath = "C:\Users\twakj\source\repos\jacosr\deadpdf\testform\testform.dpdf";
   loadZipIntoMemory(zipFilePath);
 
   win.loadURL('dpdf://index.html');
