@@ -2,7 +2,7 @@ import { app, BrowserWindow, protocol } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import JSZip from 'jszip';
-import { get } from 'http';
+import {dialog,ipcMain} from 'electron';
 
 
 let zip: JSZip | null = null;
@@ -23,13 +23,17 @@ app.whenReady().then(() => {
                 });
                 return;
             }
+            else {
+                // default fallback
+                callback({
+                    data: Buffer.from(`Not found: ${url}`), 
+                    mimeType: 'text/plain' 
+                });
+            }
+        }).catch((err) => {
+            console.error("Error loading from zip:", err);
         });
 
-        // default fallback
-        callback({
-            data: Buffer.from(`Not found: ${url}`), 
-            mimeType: 'text/plain' 
-        });
     });
 
     createWindow();
@@ -57,8 +61,9 @@ function createWindow() {
   });
 
   // Load the zip file into memory at startup
-  const zipFilePath = "C:\Users\twakj\source\repos\jacosr\deadpdf\testform\testform.dpdf";
-  loadZipIntoMemory(zipFilePath);
+  const dpdfFilePath = "C:\\Users\\twakj\\source\\repos\\jacosr\\deadpdf\\testform\\testform.dpdf";
+  loadZipIntoMemory(dpdfFilePath);
+  
 
   win.loadURL('dpdf://index.html');
 }

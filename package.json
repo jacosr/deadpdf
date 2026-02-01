@@ -4,8 +4,7 @@
   "description": "",
   "main": "./dist/main.js",
   "scripts": {
-    "copy": "cp src/renderer/*.html dist/renderer/",
-    "build": "tsc && npm run copy",
+    "build": "tsc && npm run",
     "start": "npm run build && electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
