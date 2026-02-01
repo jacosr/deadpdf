@@ -1,8 +1,10 @@
-import { contextBridge } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
+
 
 contextBridge.exposeInMainWorld('deadpdf', {
-  // api to come
-  
+    
+    openFile: () => ipcRenderer.invoke('open-dpdf')
+    
 }); 
 
 

@@ -1,8 +1,9 @@
-import { app, BrowserWindow, protocol } from 'electron';
+import { app, BrowserWindow, protocol, webContents } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
-import JSZip from 'jszip';
+import JSZip, { file } from 'jszip';
 import {dialog,ipcMain} from 'electron';
+import { electron } from 'process';
 
 
 let zip: JSZip | null = null;
@@ -51,21 +52,39 @@ app.on('window-all-closed', () => {
     }
 });
 
+ipcMain.handle('open-dpdf', async (webContents) => {
+    const filePath = await selectFilePath();
+    console.log("Selected file:", filePath);
+    if (!filePath) { return null; }
+
+    await loadZipIntoMemory(filePath).catch((err) => {
+        console.error("Error loading zip file:", err);
+    });
+    console.log("Loaded zip into memory:", filePath);
+
+    const win = BrowserWindow.getFocusedWindow();
+    win?.loadURL('dpdf://index.html');
+
+    return filePath;
+});
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 1000,
     height: 800,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+        preload: path.join(__dirname, 'preload.js'),
+        contextIsolation: true,
+        nodeIntegration: false
     },
   });
 
   // Load the zip file into memory at startup
-  const dpdfFilePath = "C:\\Users\\twakj\\source\\repos\\jacosr\\deadpdf\\testform\\testform.dpdf";
-  loadZipIntoMemory(dpdfFilePath);
-  
+  //const dpdfFilePath = "C:\\Users\\twakj\\source\\repos\\jacosr\\deadpdf\\testform\\testform.dpdf";
+  //loadZipIntoMemory(dpdfFilePath);
+  //win.loadURL('dpdf://index.html');
 
-  win.loadURL('dpdf://index.html');
+  win.loadURL('file://' + path.join(__dirname, 'renderer/index.html'));
 }
 
 async function loadZipIntoMemory(filePath: string) {
@@ -100,6 +119,24 @@ function getMimeType(filePath: string): string {
         default:
             return 'application/octet-stream';
     }
+}
+
+async function selectFilePath(): Promise<string | null> { 
+
+    const result = await dialog.showOpenDialog({
+        title: 'Open DeadPDF File',
+        filters: [
+            { name: 'DeadPDF Files', extensions: ['dpdf','zip'] },
+            { name: 'All files', extensions: ['*'] }
+        ],
+        properties: ['openFile']
+    });
+
+    if (result.canceled || result.filePaths.length === 0) {
+        return null;
+    }
+
+    return result.filePaths[0];
 }
 
 
